@@ -1,11 +1,7 @@
+import { spawnSync } from "child_process";
 import Serverless from "serverless";
 import { BindingUtils } from "./bindings";
 import { constants } from "./constants";
-import util from "util";
-import { exec, spawn, spawnSync } from "child_process";
-import { Logger } from "../models/generic"
-
-const promisifiedExec = util.promisify(exec);
 
 export interface FunctionMetadata {
   entryPoint: any;
@@ -124,7 +120,7 @@ export class Utils {
     return new Function(...names, `return \`${template}\`;`)(...vals);
   }
 
-  public static spawn(command: string): { stdout: string, stderr: string} {
+  public static spawn(command: string): { stdout: string; stderr: string} {
     const cmd = spawnSync(command);
     return { stdout: cmd.stdout.toString(), stderr: cmd.stderr.toString()}
   }

@@ -6,7 +6,7 @@ export class ConverterService extends BaseService {
     super(serverless, options, false);
   }
 
-  public convertServerlessToFunctionJson(): {name: string, json: any}[]{
+  public convertServerlessToFunctionJson(): {name: string; json: any}[]{
     this.serverless.cli.log("Building required function.json files from serverless.yml...");
     const functions = this.getServerlessConfig().functions;
     const functionNames = Object.keys(functions);

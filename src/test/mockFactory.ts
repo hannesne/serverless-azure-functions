@@ -59,6 +59,42 @@ export class MockFactory {
     return (asYaml) ? yaml.dump(data) : data;
   }
 
+  public static createTestTransformedFunctions(functionCount = 3): {name: string; json: any}[] {
+    const data = [];
+    for (let i = 0; i < functionCount; i++) {
+      const functionName = `function${i+1}`;
+      data.push({
+        name: functionName,
+        json: MockFactory.createTestFunctionJson()
+      })
+    }
+    return data;
+  }
+
+  public static createTestFunctionJson() {
+    return {
+      bindings: [
+        {
+          authLevel: "anonymous",
+          type: "httpTrigger",
+          direction: "in",
+          name: "req",
+          methods: [
+            "get",
+            "post",
+          ]
+        },
+        {
+          type: "http",
+          direction: "out",
+          name: "res",
+        }
+      ]
+    }
+  }
+
+  
+
   public static createTestFunctionsMetadata(functionCount = 2, wrap = false) {
     const data = {};
     for (let i = 0; i < functionCount; i++) {
