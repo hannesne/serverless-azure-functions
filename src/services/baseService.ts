@@ -2,6 +2,7 @@ import Serverless from "serverless";
 import axios from "axios";
 import request from "request"
 import fs from "fs";
+import { ServerlessConfig } from "../models/serverless"
 
 export abstract class BaseService {
   protected baseUrl: string;
@@ -11,7 +12,7 @@ export abstract class BaseService {
   protected resourceGroup: string;
   protected deploymentName: string;
 
-  public constructor(protected serverless: Serverless, protected options: Serverless.Options) {
+  public constructor(protected serverless: Serverless, protected options: Serverless.Options, authenticate = true) {
     this.baseUrl = "https://management.azure.com";
     this.serviceName = serverless.service["service"];
     this.credentials = serverless.variables["azureCredentials"];
@@ -19,7 +20,7 @@ export abstract class BaseService {
     this.resourceGroup = serverless.service.provider["resourceGroup"] || `${this.serviceName}-rg`;
     this.deploymentName = serverless.service.provider["deploymentName"] || `${this.resourceGroup}-deployment`;
 
-    if (!this.credentials) {
+    if (!this.credentials && authenticate) {
       throw new Error(`Azure Credentials has not been set in ${this.constructor.name}`);
     }
   }
@@ -82,5 +83,13 @@ export abstract class BaseService {
           resolve(response);
         }));
     });
+  }
+
+  protected getServerlessConfig(): ServerlessConfig {
+    return this.serverless.utils.readFileSync("serverless.yml") as ServerlessConfig;
+  }
+
+  protected log(message: string) {
+    this.serverless.cli.log(message);
   }
 }
